@@ -1,0 +1,5 @@
+- name: Prepare VM with Docker
+  hosts: vm
+  become: yes
+  roles:
+    - vm_setup

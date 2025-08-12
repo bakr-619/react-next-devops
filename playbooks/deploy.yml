@@ -1,0 +1,11 @@
+- name: Deploy Docker Compose in VM
+  hosts: vm
+  become: yes
+  tasks:
+    - name: Copy docker-compose file
+      copy:
+        src: ./docker/docker-compose.prod.yml
+        dest: /home/ubuntu/docker-compose.prod.yml
+
+    - name: Start services
+      command: docker compose -f /home/ubuntu/docker-compose.prod.yml up -d

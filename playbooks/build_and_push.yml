@@ -1,0 +1,21 @@
+- name: Build and push multi-arch images
+  hosts: localhost
+  vars:
+    docker_user: your_dockerhub_user
+    docker_pass: your_dockerhub_password
+    repo_name: your_repo
+  tasks:
+    - name: Log in to DockerHub
+      community.docker.docker_login:
+        username: "{{ docker_user }}"
+        password: "{{ docker_pass }}"
+
+    - name: Create buildx builder
+      command: docker buildx create --use --name multiarch-builder --driver docker-container
+      ignore_errors: yes
+
+    - name: Build and push frontend
+      command: docker buildx build --platform linux/amd64,linux/arm64 -t "{{ docker_user }}/{{ repo_name }}-frontend:latest" --push ./docker/frontend
+
+    - name: Build and push backend
+      command: docker buildx build --platform linux/amd64,linux/arm64 -t "{{ docker_user }}/{{ repo_name }}-backend:latest" --push ./docker/backend
